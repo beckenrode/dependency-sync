@@ -22,8 +22,8 @@ class DependencyReporter
             throw new RuntimeException('DEPENDENCY_SYNC_TOKEN is not configured.');
         }
 
-        if (! is_string($endpoint) || filter_var($endpoint, FILTER_VALIDATE_URL) === false) {
-            throw new RuntimeException('DEPENDENCY_SYNC_ENDPOINT must be a valid URL.');
+        if (! is_string($endpoint) || ! $this->isValidHttpEndpoint($endpoint)) {
+            throw new RuntimeException('DEPENDENCY_SYNC_ENDPOINT must be a valid HTTP or HTTPS URL.');
         }
 
         $response = $this->http
@@ -36,5 +36,14 @@ class DependencyReporter
         $response->throw();
 
         return $response->json();
+    }
+
+    private function isValidHttpEndpoint(string $endpoint): bool
+    {
+        $parts = parse_url($endpoint);
+
+        return is_array($parts)
+            && in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https'], true)
+            && ! empty($parts['host']);
     }
 }

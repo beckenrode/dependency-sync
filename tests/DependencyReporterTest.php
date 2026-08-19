@@ -11,7 +11,7 @@ class DependencyReporterTest extends TestCase
     {
         config([
             'dependency-sync.token' => 'test-secret-token',
-            'dependency-sync.endpoint' => 'https://dependencies.example/api/sync',
+            'dependency-sync.endpoint' => 'https://dependency_sync.test/api/sync',
         ]);
 
         Http::fake([
