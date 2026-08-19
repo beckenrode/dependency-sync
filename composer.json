@@ -1,0 +1,44 @@
+{
+    "name": "beckenrode/dependency-sync",
+    "description": "Report Laravel application Composer and npm dependencies to a Dependency Sync API.",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/beckenrode/dependency-sync",
+    "support": {
+        "issues": "https://github.com/beckenrode/dependency-sync/issues",
+        "source": "https://github.com/beckenrode/dependency-sync"
+    },
+    "require": {
+        "php": "^8.1",
+        "composer-runtime-api": ">=2.2",
+        "illuminate/console": "^10.0|^11.0|^12.0|>=13.0",
+        "illuminate/support": "^10.0|^11.0|^12.0|>=13.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0|^10.0|>=11.0",
+        "phpunit/phpunit": ">=10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DependencySync\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DependencySync\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DependencySync\\DependencySyncServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
