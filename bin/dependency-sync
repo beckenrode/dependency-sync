@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+use DependencySync\DependencySync;
+
+require $_composer_autoload_path ?? dirname(__DIR__).'/vendor/autoload.php';
+
+try {
+    $result = DependencySync::reporter(getcwd())->report();
+    printf("Dependency sync completed: %d Composer packages and %d npm packages.\n", $result['counts']['composer'] ?? 0, $result['counts']['npm'] ?? 0);
+    exit(0);
+} catch (Throwable $exception) {
+    fwrite(STDERR, $exception->getMessage().PHP_EOL);
+    exit(1);
+}

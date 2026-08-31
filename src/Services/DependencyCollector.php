@@ -8,13 +8,22 @@ use RuntimeException;
 
 class DependencyCollector
 {
+    public function __construct(private readonly ?string $projectRoot = null)
+    {
+    }
+
     public function collect(): array
     {
         return [
             'php_version' => PHP_VERSION,
             'composer' => $this->composerPackages(),
-            'npm' => $this->npmPackages(base_path('package-lock.json')),
+            'npm' => $this->npmPackages($this->root().'/package-lock.json'),
         ];
+    }
+
+    private function root(): string
+    {
+        return rtrim($this->projectRoot ?? getcwd() ?: '.', DIRECTORY_SEPARATOR);
     }
 
     public function composerPackages(): array

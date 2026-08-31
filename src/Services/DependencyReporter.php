@@ -2,40 +2,36 @@
 
 namespace DependencySync\Services;
 
-use Illuminate\Http\Client\Factory;
+use DependencySync\Contracts\HttpClient;
 use RuntimeException;
 
 class DependencyReporter
 {
     public function __construct(
         private readonly DependencyCollector $collector,
-        private readonly Factory $http,
+        private readonly HttpClient $http,
+        private readonly string $token,
+        private readonly string $endpoint,
+        private readonly int $timeout = 30,
     ) {
     }
 
     public function report(): array
     {
-        $token = config('dependency-sync.token');
-        $endpoint = config('dependency-sync.endpoint');
-
-        if (! is_string($token) || $token === '') {
+        if ($this->token === '') {
             throw new RuntimeException('DEPENDENCY_SYNC_TOKEN is not configured.');
         }
 
-        if (! is_string($endpoint) || ! $this->isValidHttpEndpoint($endpoint)) {
+        if (! $this->isValidHttpEndpoint($this->endpoint)) {
             throw new RuntimeException('DEPENDENCY_SYNC_ENDPOINT must be a valid HTTP or HTTPS URL.');
         }
 
-        $response = $this->http
-            ->asJson()
-            ->acceptJson()
-            ->withToken($token)
-            ->timeout((int) config('dependency-sync.timeout', 30))
-            ->post($endpoint, $this->collector->collect());
-
-        $response->throw();
-
-        return $response->json();
+        return $this->http->postJson(
+            $this->endpoint,
+            $this->collector->collect(),
+            $this->token,
+            $this->timeout,
+        );
     }
 
     private function isValidHttpEndpoint(string $endpoint): bool
